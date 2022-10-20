@@ -1,29 +1,30 @@
-%% Mesh for Breakwater Paper (this mesh is for possible edits during the FHRL team meeting). 
-clearvars; clc; 
+%% Mesh for Breakwater Paper. 
 
-addpath(genpath('utilities'))
+clearvars; clc; % clears and arguments and variables 
+
+addpath(genpath('utilities')) % add necessasry folders to the active path
 addpath(genpath('datasets'))
 addpath(genpath('m_map1.4'))
 
-%% North Atlantic Ocean: 
+%% North Atlantic Ocean Level: 
 
-bbox_NA = [-99 -60; 8 45];     
+bbox_NA = [-99 -60; 8 45];  % define meshing limits    
 
-min_el_NA    = 3e3;  	% Minimum resolution in meters. Constant grid spacing palaner meter. 
-max_el_NA    = 70e3; 	% Maximum resolution in meters. 
+min_el_NA    = 3e3;  	% minimum resolution in meters. constant grid spacing palaner meter. 
+max_el_NA    = 70e3; 	% maximum resolution in meters
 
-R_NA         = 3;    	% Number of elements to resolve feature width. (Consider removing. Not important)
-
-
-grade     = 0.25; 	% 0.2<g<0.3
-dt           = 1; 
+R_NA         = 3;    	% number of elements to resolve feature width 
 
 
-coastline = 'polygon_MD_coastline BMJ_v3_Breakwater'; 
+grade     = 0.25; 	% 0.2< g <0.3
+dt           = 1;   % time step. the default is 2 sec 
 
-dem_NA       = 'continental_gebco_2019.nc'; % DEM must be in WGS84. 
 
-gdat_NA = geodata('shp',coastline,...
+coastline = 'polygon_MD_coastline BMJ_v3_Breakwater'; % read in coastline 
+
+dem_NA       = 'continental_gebco_2019.nc'; % DEM must be in WGS84 NetCDF 
+
+gdat_NA = geodata('shp',coastline,...   % geodata base object 
                   'bbox',bbox_NA,...
                   'dem',dem_NA,...
                   'h0',min_el_NA); 
@@ -31,15 +32,16 @@ gdat_NA = geodata('shp',coastline,...
 % plot(gdat_NA,'shp'); 
 % plot(gdat_NA,'dem'); 
 
-fh_NA = edgefx('geodata',gdat_NA,... 
+fh_NA = edgefx('geodata',gdat_NA,...    % size function for the mesh element size 
                 'fs',R_NA,...
                 'max_el',max_el_NA,...
                 'dt',dt,...
                 'g',grade); 
 
-%% Coastal Shelf: 
+%% Coastal Shelf Level: 
 
-bbox_CS = [-72.91386414	38.29096222;
+%% 
+bbox_CS = [-72.91386414	38.29096222;    % meshing boundary long and lat or x and y
 -73.7906189	37.47682953;
 -74.29161835	36.52850342;
 -74.48844147	35.56228256;
@@ -53,6 +55,7 @@ bbox_CS = [-72.91386414	38.29096222;
 -73.36405182	39.45042419;
 -72.89453888	38.92365646;
 -72.91386414	38.29096222];
+%%
 
 min_el_CS    = 1e3;  	
 max_el_CS    = 3e3; 	
@@ -75,9 +78,11 @@ fh_CS = edgefx('geodata',gdat_CS,...
                'dt',dt,...
                'g',grade);
 
-%% Chesapeak Bay: 
+%% Chesapeak Bay Level: 
 
-% bbox from Andre 
+% bbox that covers overland as well 
+
+%%
 bbox_CB = [-75.9329667313 36.8010329671; 
 -76.0549141078 36.7998432365; 
 -76.2544319132 36.7827111173; 
@@ -162,11 +167,11 @@ bbox_CB = [-75.9329667313 36.8010329671;
 -75.7396355246 37.0568250252; 
 -75.8377882911 36.9259546699;
 -75.9329667313 36.8010329671];
+%%
 
 min_el_CB    = 160;  	
 max_el_CB    = 1e3; 	
 R_CB         = 3;    	
-
 
 dem_CB       = 'final_01292020_geo.nc'; 
 
@@ -184,27 +189,9 @@ fh_CB = edgefx('geodata',gdat_CB,...
                'dt',dt, ...
                'g',grade);
 
-%% Dyke Marsh Location 
+%% Dyke Marsh Location Level: 
 
-% bbox_DM = [-77.2 -77; 38.7 38.9];      
-
-% bbox_DM = [-77.03929901	38.71670151; % This only includes the right
-% bank. 
-% -77.11669922	38.7621994;
-% -77.10679626	38.83990097;
-% -77.03240204	38.82699966;
-% -77.03170013	38.80820084;
-% -77.03500366    38.77949905;
-% -77.03620148    38.75370026;
-% -77.03929901    38.71670151
-% ];      
-
-% bbox_DM = [-76.897287 38.680812;
-% -77.179052 38.757003;
-% -77.181927 38.996359;
-% -76.863504 38.973358;
-% -76.897287 38.680812];
-
+%%
 bbox_DM = [-77.00842401	38.71307817;
 -77.02180978	38.71006336;
 -77.05424915	38.71766068;
@@ -219,11 +206,11 @@ bbox_DM = [-77.00842401	38.71307817;
 -76.99754054	38.75050706;
 -77.00300489	38.7288381;
 -77.00842401	38.71307817];
-
+%%
 
 min_el_DM    = 30;  	% The lowest that worked was 30. 
 max_el_DM    = 160; 	    
-R_DM         = 6;    	% 6 worked
+R_DM         = 6;    	% max 6 worked
 
 dem_DM       = 'Reproject_Chesapeake_Topo.nc'; 
 
@@ -235,7 +222,6 @@ gdat_DM = geodata('shp',coastline,...
 % plot(gdat_DM,'shp');
 % plot(gdat_DM,'dem');
 
-
 fh_DM = edgefx('geodata',gdat_DM,...
                'fs',R_DM, ...
                'max_el',max_el_DM, ...
@@ -244,7 +230,7 @@ fh_DM = edgefx('geodata',gdat_DM,...
 
 %% Build Mesh
 
-mshopts = meshgen('ef',{fh_NA fh_CS fh_CB fh_DM},...
+mshopts = meshgen('ef',{fh_NA fh_CS fh_CB fh_DM},...    % define mesh options
                   'bou', {gdat_NA, gdat_CS, gdat_CB gdat_DM},...
                   'enforceMin',1,...
                   'cleanup', 1,... 
@@ -252,43 +238,36 @@ mshopts = meshgen('ef',{fh_NA fh_CS fh_CB fh_DM},...
                   'itmax',100,...
                   'plot_on',1); 
 
-mshopts = mshopts.build; 
+mshopts = mshopts.build; % build method to build the mesh 
 
-muw = mshopts.grd; 
+muw = mshopts.grd;      % save mesh in a table  
 
-% muw = interp(muw,{gdat_NA gdat_CS gdat_CB gdat_DM}); 
-% 
-% muw = lim_bathy_slope(muw, 0.1,0);
-% 
-% muw = make_bc(muw,'auto',gdat_NA); 
-% 
-% write(muw,'Proj_BigMesh_muw'); 
+%% Adding Overland Area 
 
-%% Adding Overland 
+[pfix,egfix] = extractFixedConstraints(muw);    % extract original coastline boundary 
 
-[pfix,egfix] = extractFixedConstraints(muw);
+drawedge2(pfix,egfix); % visualize the original coastline  
 
-drawedge2(pfix,egfix); % Visualize the constraints 
-
-%% Overland for Chesapeake Bay 
+%% Overland for Chesapeake Bay Level 
  
-contour = 'overland2_fc_pol'; % Read in upland coasline (example 15 m contour line). 
+contour = 'overland2_fc_pol'; % read in upland coasline 5 meter contour line in meters 
 
 gdat_CBO = geodata('shp',contour,...
                    'bbox',bbox_CB,...
                    'dem',dem_CB,... 
                    'h0',min_el_CB); 
 
-plot(gdat_CBO,'shp');
+% plot(gdat_CBO,'shp');
 
 %% Overland for Dyke Marsh 
+% do this step for higher resolution and including the overland area 
 
 gdat_DMO = geodata('shp',contour,...
                    'bbox',bbox_DM,...
                    'dem',dem_DM,... 
                    'h0',min_el_DM); 
 
-gdat_DMO.inpoly_flip =  mod(0,gdat_DMO.inpoly_flip); % This flips the meshing area between water and overland 
+gdat_DMO.inpoly_flip =  mod(0,gdat_DMO.inpoly_flip); % This flips the meshing area between water and overland. change 0 to 1 to flip. 
 
 % plot(gdat_DMO,'shp');
 
@@ -309,6 +288,7 @@ m = mshopts.grd;
 % write(m,'Proj_BigMeshOver');
 
 %% Interpolation elevation  
+% with every step new refined elevations will be added to the mesh 
 
 m1 = interp(m,gdat_NA,'nan','fill','mindepth', 1); % The mindepth won't let the bathymetry be less then -136 (the highest elevation at the domain)
 m2 = interp(m1,gdat_CS,'mindepth', 1); % The mindepth won't let the bathymetry be less then -136 (the highest elevation at the domain)
@@ -318,8 +298,8 @@ m5=m4;
 
 %% Adding boundary condition 
 
-m5 = lim_bathy_slope(m5, 0.1,0);
+m5 = lim_bathy_slope(m5, 0.1,0);    % smoothes the steep slopes in the mesh 
 
-m5 = make_bc(m5,'auto',gdat_NA); 
+m5 = make_bc(m5,'auto',gdat_NA);    % makes automatic boundary condition 
 
-write(m5,'Proj_BigMeshOverL_30_Final'); 
+write(m5,'Proj_BigMeshOverL_30_Final'); %  saves file as fort.15 
